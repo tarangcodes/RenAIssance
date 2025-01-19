@@ -1,34 +1,40 @@
 import http.client
 import json
 
-# Task 1: Establish a connection to WorqHat's API
+# Necessary modules imported.
+
+# Establising connection with worqhat's api :
 conn = http.client.HTTPSConnection("api.worqhat.com")
 
-# New Task : Use If-elif-else for ai to generate 2 types of content - one for text and other for image.
+
+# Creating a variable choice with input function, so the user can choose text content or image content.
 
 choice = input("Hello, Enter Prompt 'text' for Content generation or 'image' for Image generation : \n")
-
+# Payload assigned in global scope to prevent errors while running the code -
 payload = None
-
+# Main code and implementation starts here.
 if choice == "text":
     question = input("Please enter your text prompt for Content Generation : \n")
 
-    # text wala payload down here 👇
+    # text generation payload -
 
     payload = json.dumps({
         "question": question,
         "model": "aicon-v4-nano-160824",
-        "randomness": 0.7,  # Adjust for creativity (0.1 to 1.0)
-        "stream_data": False,  # Set to True for streamed responses
+        "randomness": 0.7,  # Adjusting for creativity (0.1 to 1.0).
+        "stream_data": False,  # Set to True for streamed responses or keep it False
         "training_data": "You are a professional content creator specializing in travel. Write creative, detailed content.",
         "response_type": "text"
     })
+    
 
 elif choice == "image":
     question = input("Please enter your text prompt for graphic generation: \n").strip()
 
     if not question or len(question) < 5:
         print("Error: prompt must be descriptive and non-empty.")
+        
+        # Image generation payload -
 
     else:
         print(f"Question received : {question}")
@@ -40,13 +46,13 @@ elif choice == "image":
             "model": "aicon-v4-alpha-160824"
         })
 
-        # -------------------------------------NEW TASK-------------------------------------------------------
+        
 if payload:
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer sk-8a30fa76afa84c8493b2938f634d34e4'  # Replace with your actual API key
+        'Authorization': 'Bearer sk-8a30fa76afa84c8493b2938f634d34e4'  # API key for authorization (imp)
     }
-    # -------------------------------------IGNORE UNTIL PREVIOUS TASKS ARE COMPLETED-------------------------
+    # try code block, necessary for making request with APIs -
     try:
         endpoint = "/api/ai/content/v4" if choice == "text" else "/api/ai/images/generate/v2"
         conn.request("POST", "/api/ai/content/v4", payload, headers)
@@ -59,5 +65,5 @@ if payload:
     except Exception as e:
         print(f"An error occurred: {e}")
 
-# Step 6: Close the connection
+# Closing the connection here.
 conn.close()
